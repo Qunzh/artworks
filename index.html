@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artworks by Kingsley Zheng</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE occasion, hushed: a quiet exhibition of one artist's drawings
+   IDEA a dark gallery room: each work hangs alone on its own wall, with a small wall label
+   PICTURE the works themselves, as large as the screen allows; the opening wall shows all 19, hung by series
+   COLOUR charcoal ground #121212 in both themes, warm white ink, grey for labels; the art brings the only colour
+   TYPE Cormorant Garamond for the title and numbers, Inter for labels
+   LAYOUT a slim bar on top; one work per screen, swiped or paged sideways; the label sits under the work. Phone: the same, stacked tighter */
+:root{color-scheme:dark;--bg:#121212;--ink:#ecebe7;--mute:#97958f;--line:#2c2b29}
+:root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 Inter,system-ui,-apple-system,sans-serif;display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
+button{font:inherit;color:inherit}
+.bar{display:flex;align-items:center;gap:8px;padding:6px max(16px,3vw);border-bottom:1px solid var(--line)}
+.brand{margin-right:auto;background:none;border:0;padding:0 4px 0 0;min-height:44px;font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;cursor:pointer;white-space:nowrap}
+.count{color:var(--mute);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 8px}
+.btn{min-width:44px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:transparent;font-size:14px;cursor:pointer;white-space:nowrap}
+.btn:hover{border-color:var(--mute)}
+.btn:disabled{opacity:.3;cursor:default;border-color:var(--line)}
+button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
+.deck{display:flex;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none}
+.deck::-webkit-scrollbar{display:none}
+.slide{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always;display:grid;grid-template-rows:minmax(0,1fr) auto;padding:clamp(12px,2.5vw,32px) max(16px,3vw) 0}
+.art{position:relative;min-height:0;cursor:zoom-in}
+.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.cap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:12px 0 clamp(12px,2.2vw,26px)}
+.no{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(26px,3vw,34px);line-height:1;white-space:nowrap}
+.ser{color:var(--mute);font-size:14px;white-space:nowrap}
+.sib{display:flex;gap:6px}
+.sib button{padding:6px 0;border:0;background:none;cursor:pointer;opacity:.35;transition:opacity .2s}
+.sib button:hover{opacity:.7}
+.sib button[aria-current]{opacity:1;cursor:default}
+.sib img{height:30px;width:auto;display:block}
+.detail{margin-left:auto}
+.cover{grid-template-rows:auto auto;align-content:start;overflow-x:hidden;overflow-y:auto;padding-bottom:28px}
+.cover h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(40px,5.6vw,76px);line-height:1.02;letter-spacing:-.02em;margin:clamp(4px,2vh,24px) 0 10px;text-wrap:balance}
+.lede{color:var(--mute);max-width:62ch;margin:0 0 clamp(16px,3vh,32px)}
+.lede button{background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.wall{--th:120px;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:end;gap:clamp(18px,3vh,32px) clamp(40px,4vw,64px)}
+.rset{display:flex;justify-content:space-evenly;align-items:flex-end;gap:36px}
+.wall.wrap{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 22px}
+.wall.wrap .rset{display:contents}
+.grp .row button{animation:drift var(--d,14s) ease-in-out var(--dl,0s) infinite alternate;will-change:transform}
+.wall.still .grp .row button{animation-play-state:paused}
+.wall.pre{visibility:hidden}
+@keyframes drift{0%{transform:translate(0,0)}33%{transform:translate(var(--x1),var(--y1))}66%{transform:translate(var(--x2),var(--y2))}100%{transform:translate(var(--x3),var(--y3))}}
+.grp{display:flex;flex-direction:column;gap:14px}
+.grp .row{display:flex;gap:14px}
+.grp button{padding:0;border:0;background:none;cursor:pointer;display:block}
+.grp img{height:var(--th);width:auto;display:block;transition:opacity .2s}
+.grp button:hover img{opacity:.75}
+.grp span{font-size:13px;color:var(--mute);white-space:nowrap}
+.zoom{position:fixed;inset:0;z-index:10;background:#0b0b0b;overflow:auto;cursor:zoom-out;overscroll-behavior:contain}
+.zoom[hidden]{display:none}
+.zoom img{display:block;max-width:none;margin:auto}
+.zoom .btn{position:fixed;top:12px;right:max(16px,3vw);background:#121212}
+@media(max-width:600px){
+.bar{gap:4px}
+.brand{font-size:19px}
+.btn{padding:0 12px}
+.idx{display:none}
+.cap{gap:6px 16px}
+.detail{display:none}
+}
+@media(prefers-reduced-motion:reduce){.deck{scroll-behavior:auto}.grp .row button{animation:none}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <button class="brand" id="home" type="button">Kingsley Zheng</button>
+  <span class="count" id="count" aria-live="polite">19 works</span>
+  <button class="btn idx" id="index" type="button">Index</button>
+  <button class="btn" id="prev" type="button" aria-label="Previous work">&#8592;</button>
+  <button class="btn" id="next" type="button" aria-label="Next work">&#8594;</button>
+</header>
+<main class="deck" id="deck" tabindex="-1"></main>
+<div class="zoom" id="zoom" hidden>
+  <img id="zimg" alt="">
+  <button class="btn" id="zclose" type="button">Close</button>
+</div>
+<script>
+{
+const DIMS=[[2400,1873],[2400,1902],[2400,1842],[2400,1681],[2400,1669],[2400,1674],[2400,1692],[2400,1732],[2400,1562],[2400,1650],[2400,1718],[1037,2400],[976,2400],[2400,1678],[2400,1729],[2400,1734],[2400,1728],[2400,1716],[914,1484]];
+const SERIES=[["I",[1,2,3]],["II",[4,5,6]],["III",[7,8,9]],["IV",[12,13]],["V",[15,16]],["VI",[17,18]]];
+const N=DIMS.length;
+const pad=n=>String(n).padStart(2,"0");
+const serOf=n=>SERIES.find(s=>s[1].includes(n));
+const big=n=>`works/${pad(n)}.jpg`;
+const small=n=>`thumbs/${pad(n)}.jpg`;
+const label=n=>{const s=serOf(n);return s?`No. ${pad(n)}, Series ${s[0]}, ${s[1].indexOf(n)+1} of ${s[1].length}`:`No. ${pad(n)}`};
+
+/* the opening wall: every work, hung in its series */
+const groups=[];
+for(let n=1;n<=N;n++){
+  const s=serOf(n);
+  if(s&&s[1][0]!==n)continue;
+  groups.push(s?{name:`Series ${s[0]}`,items:s[1]}:{name:`No. ${pad(n)}`,items:[n]});
+}
+/* three rows: a three-part series on the left, the smaller works beside it */
+const AR=n=>DIMS[n-1][0]/DIMS[n-1][1];
+const grpAR=g=>g.items.reduce((s,n)=>s+AR(n),0);
+const byFirst=n=>groups.find(g=>g.items[0]===n);
+const LAYOUT=[[1,[10,11,12]],[4,[14,15]],[7,[17,19]]];
+const ROWS=LAYOUT.map(([l,r])=>({left:byFirst(l),right:r.map(byFirst)}));
+/* each thumbnail drifts on its own slow, small path */
+let seed=11;
+const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
+const v=a=>((rnd()*2-1)*a).toFixed(2);
+/* sideways drift stays under half the 14px gap between neighbours, so works never touch */
+const drift=()=>`--d:${(12+rnd()*8).toFixed(1)}s;--dl:-${(rnd()*16).toFixed(1)}s;--x1:${v(5)}px;--y1:${v(10)}px;--x2:${v(5)}px;--y2:${v(10)}px;--x3:${v(5)}px;--y3:${v(10)}px`;
+const thumb=n=>{const[w,h]=DIMS[n-1];return `<button type="button" data-go="${n}" aria-label="Open ${label(n)}" style="${drift()}"><img src="${small(n)}" width="${Math.round(640*w/Math.max(w,h))}" height="${Math.round(640*h/Math.max(w,h))}" alt=""></button>`};
+/* opening: the works start gathered in one pile and scatter to their places (only when the index is the first view) */
+const introOK=!matchMedia("(prefers-reduced-motion: reduce)").matches&&!/^#work-/.test(location.hash);
+const grpHtml=g=>`<div class="grp"><div class="row">${g.items.map(thumb).join("")}</div><span>${g.name}</span></div>`;
+const cover=`<section class="slide cover" aria-label="Index">
+  <div>
+    <h1>Artworks by Kingsley Zheng</h1>
+    <p class="lede">Nineteen works: six series and four single pieces. Choose a work, swipe, or use the arrow keys to walk through them in order, <button type="button" data-go="1">starting with No.&nbsp;01</button>. All works &copy; Kingsley Zheng.</p>
+  </div>
+  <div class="wall${introOK?" pre":""}">${ROWS.map(r=>grpHtml(r.left)+`<div class="rset">${r.right.map(grpHtml).join("")}</div>`).join("")}</div>
+</section>`;
+
+/* one wall per work */
+const slide=n=>{
+  const[w,h]=DIMS[n-1];const s=serOf(n);
+  const sib=s?`<div class="sib">${s[1].map(m=>`<button type="button" data-go="${m}" aria-label="${label(m)}"${m===n?' aria-current="true"':""}><img src="${small(m)}" alt="" loading="lazy"></button>`).join("")}</div>`:"";
+  return `<section class="slide" id="w${n}" aria-label="${label(n)}">
+  <div class="art" data-z="${n}"><img src="${big(n)}" width="${w}" height="${h}" alt="${label(n)}, by Kingsley Zheng" loading="${n<3?"eager":"lazy"}" decoding="async"></div>
+  <div class="cap"><span class="no">No. ${pad(n)}</span>${s?`<span class="ser">Series ${s[0]}, ${s[1].indexOf(n)+1} of ${s[1].length}</span>`:""}${sib}<button class="btn detail" type="button" data-z="${n}">View detail</button></div>
+</section>`};
+
+const deck=document.getElementById("deck");
+deck.innerHTML=cover+Array.from({length:N},(_,i)=>slide(i+1)).join("");
+
+/* size the wall: rows as wide as the page allows, all three rows on the first screen when there is room */
+const coverEl=deck.querySelector(".cover"),wall=deck.querySelector(".wall");
+const IG=14,GG=36,LABEL=36;
+const intra=g=>IG*(g.items.length-1);
+const fitWall=()=>{
+  const W=wall.clientWidth;if(!W)return;
+  const colGap=Math.min(64,Math.max(40,innerWidth*.04)),rowGap=Math.min(32,Math.max(18,innerHeight*.03));
+  const leftAR=Math.max(...ROWS.map(r=>grpAR(r.left))),leftIn=Math.max(...ROWS.map(r=>intra(r.left)));
+  const wTh=Math.min(...ROWS.map(r=>(W-colGap-leftIn-r.right.reduce((s,g)=>s+intra(g),0)-GG*(r.right.length-1))/(leftAR+r.right.reduce((s,g)=>s+grpAR(g),0))));
+  if(wTh<70){wall.classList.add("wrap");wall.style.setProperty("--th",(W<420?64:76)+"px");return}
+  wall.classList.remove("wrap");
+  const cs=getComputedStyle(coverEl);
+  const avail=coverEl.getBoundingClientRect().bottom-wall.getBoundingClientRect().top-coverEl.scrollTop-parseFloat(cs.paddingBottom||0);
+  const hTh=(avail-2*rowGap)/3-LABEL;
+  const th=Math.max(Math.min(wTh,hTh),Math.min(wTh,120));
+  wall.style.setProperty("--th",Math.floor(th)+"px");
+};
+const wallRO=new ResizeObserver(fitWall);
+wallRO.observe(coverEl);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitWall);
+
+const count=document.getElementById("count"),prev=document.getElementById("prev"),next=document.getElementById("next");
+const reduce=matchMedia("(prefers-reduced-motion: reduce)");
+let cur=-1;
+const setCur=i=>{
+  if(i===cur)return;cur=i;
+  wall.classList.toggle("still",i!==0);
+  count.textContent=i===0?`${N} works`:`${pad(i)} / ${N}`;
+  prev.disabled=i===0;next.disabled=i===N;
+  const h=i===0?"#index":`#work-${pad(i)}`;
+  try{if(location.hash!==h)history.replaceState(null,"",h)}catch(e){}
+};
+const go=(i,smooth)=>{
+  i=Math.max(0,Math.min(N,i));
+  deck.scrollTo({left:i*deck.clientWidth,behavior:smooth&&!reduce.matches?"smooth":"auto"});
+  setCur(i);
+};
+let raf=0;
+deck.addEventListener("scroll",()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>setCur(Math.round(deck.scrollLeft/deck.clientWidth)))},{passive:true});
+const deckRO=new ResizeObserver(()=>{if(cur>=0)deck.scrollLeft=cur*deck.clientWidth});
+deckRO.observe(deck);
+
+const fromHash=()=>{const m=/^#work-(\d{1,2})$/.exec(location.hash);return m?+m[1]:0};
+window.addEventListener("hashchange",()=>{const i=fromHash();if(i!==cur)go(i,false)});
+
+/* detail view at full resolution, opened where the viewer clicked */
+const zoom=document.getElementById("zoom"),zimg=document.getElementById("zimg");
+const openZoom=(n,e,box)=>{
+  const[w,h]=DIMS[n-1];
+  let fx=.5,fy=.5;
+  if(e&&box){
+    const r=box.getBoundingClientRect(),k=Math.min(r.width/w,r.height/h),iw=w*k,ih=h*k;
+    fx=Math.max(0,Math.min(1,(e.clientX-r.left-(r.width-iw)/2)/iw));
+    fy=Math.max(0,Math.min(1,(e.clientY-r.top-(r.height-ih)/2)/ih));
+  }
+  const scale=Math.max(1,Math.min(w,Math.max(innerWidth*1.6,innerHeight*1.6*w/h))/w);
+  const zw=Math.round(w*Math.min(1,scale)),zh=Math.round(h*zw/w);
+  zimg.src=big(n);zimg.alt=`${label(n)}, detail`;zimg.width=zw;zimg.height=zh;
+  zoom.hidden=false;
+  zoom.scrollLeft=Math.max(0,fx*zw-zoom.clientWidth/2);
+  zoom.scrollTop=Math.max(0,fy*zh-zoom.clientHeight/2);
+  document.getElementById("zclose").focus({preventScroll:true});
+};
+const closeZoom=()=>{zoom.hidden=true;deck.focus({preventScroll:true})};
+zoom.addEventListener("click",closeZoom);
+
+deck.addEventListener("click",e=>{
+  const g=e.target.closest("[data-go]");
+  if(g){go(+g.dataset.go,true);return}
+  const z=e.target.closest("[data-z]");
+  if(z)openZoom(+z.dataset.z,z.classList.contains("art")?e:null,z.classList.contains("art")?z:null);
+});
+document.getElementById("home").addEventListener("click",()=>go(0,true));
+document.getElementById("index").addEventListener("click",()=>go(0,true));
+prev.addEventListener("click",()=>go(cur-1,true));
+next.addEventListener("click",()=>go(cur+1,true));
+document.addEventListener("keydown",e=>{
+  if(e.metaKey||e.ctrlKey||e.altKey)return;
+  if(!zoom.hidden){if(e.key==="Escape")closeZoom();return}
+  const k={ArrowRight:1,PageDown:1,ArrowLeft:-1,PageUp:-1}[e.key];
+  if(k){e.preventDefault();go(cur+k,true)}
+  else if(e.key==="Home"){e.preventDefault();go(0,true)}
+  else if(e.key==="End"){e.preventDefault();go(N,true)}
+});
+
+requestAnimationFrame(()=>go(fromHash(),false));
+
+const intro=()=>{
+  try{
+    fitWall();
+    const wr=wall.getBoundingClientRect(),cr=coverEl.getBoundingClientRect();
+    const cx=wr.left+wr.width/2,cy=(wr.top+Math.min(wr.bottom,cr.bottom))/2;
+    [...wall.querySelectorAll(".row img")].forEach((im,i)=>{
+      const r=im.getBoundingClientRect();
+      const dx=cx-(r.left+r.width/2)+(rnd()*2-1)*44,dy=cy-(r.top+r.height/2)+(rnd()*2-1)*26;
+      im.animate([{transform:`translate(${dx}px,${dy}px) scale(.5)`},{transform:"none"}],{duration:2000+rnd()*900,delay:350+i*28,easing:"cubic-bezier(.16,1,.3,1)",fill:"backwards"});
+    });
+    wall.querySelectorAll(".grp span").forEach((s,i)=>s.animate([{opacity:0},{opacity:1}],{duration:900,delay:1500+i*50,fill:"backwards"}));
+  }catch(e){}
+  wall.classList.remove("pre");
+};
+if(introOK){
+  const ready=Promise.all([document.fonts?document.fonts.ready:0,...[...wall.querySelectorAll(".row img")].map(im=>im.decode().catch(()=>0))]);
+  Promise.race([ready,new Promise(r=>setTimeout(r,1500))]).then(()=>requestAnimationFrame(intro));
+}
+}
+</script>
+</body>
+</html>
