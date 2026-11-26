@@ -30,6 +30,9 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 
 /* the index is the whole site; the page margin is the same on both sides, and the pictures run out to it */
 .cover{height:100%;overflow-x:hidden;overflow-y:auto;padding:clamp(12px,2.5vw,32px) max(16px,3vw) clamp(20px,3vw,40px)}
+/* no grey scrollbar beside the works (its length changed with each series); the lime cue says when there is more below */
+.cover{scrollbar-width:none}
+.cover::-webkit-scrollbar{display:none}
 .split{display:grid;grid-template-columns:minmax(300px,36%) minmax(0,1fr);gap:clamp(32px,4.2vw,64px);align-items:start}
 .sl{position:sticky;top:0}
 .cover h1{font-family:var(--fd);font-weight:700;font-size:clamp(30px,3.1vw,46px);line-height:1.05;letter-spacing:-.035em;margin:0;text-wrap:balance}
@@ -205,13 +208,13 @@ const updateCue=()=>{
 let cueRaf=0;
 coverEl.addEventListener("scroll",()=>{cancelAnimationFrame(cueRaf);cueRaf=requestAnimationFrame(updateCue)},{passive:true});
 /* phone: a tap opens a title's works underneath it, and closes the one that was open */
-const openOnPhone=gi=>{
+const openOnPhone=(gi,scroll)=>{
   const li=lis[gi],open=!li.classList.contains("open");
   lis.forEach(l=>{l.classList.remove("open");l.querySelector(".ti").setAttribute("aria-expanded","false")});
   if(!open)return;
   li.classList.add("open");li.querySelector(".ti").setAttribute("aria-expanded","true");
   sharpen(li);
-  requestAnimationFrame(()=>li.scrollIntoView({block:"start",behavior:introOK?"smooth":"auto"}));
+  if(scroll)requestAnimationFrame(()=>li.scrollIntoView({block:"start",behavior:introOK?"smooth":"auto"}));
 };
 coverEl.addEventListener("pointerover",e=>{const t=e.target.closest(".ti");if(t&&e.pointerType!=="touch"&&!phone.matches)showGroup(+t.dataset.g,true)});
 coverEl.addEventListener("focusin",e=>{const t=e.target.closest(".ti");if(t&&!phone.matches)showGroup(+t.dataset.g,true)});
@@ -245,7 +248,7 @@ coverEl.addEventListener("click",e=>{
   const z=e.target.closest("[data-z]");
   if(z){const im=z.classList.contains("pic")?z.querySelector("img"):null;openZoom(+z.dataset.z,im?e:null,im);return}
   const t=e.target.closest(".ti");
-  if(t){if(phone.matches)openOnPhone(+t.dataset.g);else showGroup(+t.dataset.g,true)}
+  if(t){if(phone.matches)openOnPhone(+t.dataset.g,true);else showGroup(+t.dataset.g,true)}
 });
 document.getElementById("home").addEventListener("click",()=>coverEl.scrollTo({top:0,behavior:introOK?"smooth":"auto"}));
 document.addEventListener("keydown",e=>{if(!zoom.hidden&&e.key==="Escape")closeZoom()});
