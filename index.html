@@ -42,8 +42,9 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .sib img{height:30px;width:auto;display:block}
 .detail{margin-left:auto}
 .cover{grid-template-rows:auto auto;align-content:start;overflow-x:hidden;overflow-y:auto;padding-bottom:28px}
-.cover h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(40px,5.6vw,76px);line-height:1.02;letter-spacing:-.02em;margin:clamp(4px,2vh,24px) 0 10px;text-wrap:balance}
-.lede{color:var(--mute);max-width:62ch;margin:0 0 clamp(16px,3vh,32px)}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px clamp(28px,3.5vw,56px);margin:clamp(4px,2vh,24px) 0 clamp(16px,3vh,32px)}
+.cover h1{flex:0 1 auto;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(40px,5.6vw,76px);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lede{flex:1 1 30ch;max-width:50ch;color:var(--mute);font-size:13px;line-height:1.6;margin:0;padding-bottom:.35em}
 .lede button{background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .wall{--th:120px;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:end;gap:clamp(18px,3vh,32px) clamp(40px,4vw,64px)}
 .rset{display:flex;justify-content:space-evenly;align-items:flex-end;gap:36px}
@@ -122,7 +123,7 @@ const thumb=n=>{const[w,h]=DIMS[n-1];return `<button type="button" data-go="${n}
 const introOK=!matchMedia("(prefers-reduced-motion: reduce)").matches&&!/^#work-/.test(location.hash);
 const grpHtml=g=>`<div class="grp"><div class="row">${g.items.map(thumb).join("")}</div><span>${g.name}</span></div>`;
 const cover=`<section class="slide cover" aria-label="Index">
-  <div>
+  <div class="head">
     <h1>Artworks by Kingsley Zheng</h1>
     <p class="lede">Nineteen works: six series and four single pieces. Choose a work, swipe, or use the arrow keys to walk through them in order, <button type="button" data-go="1">starting with No.&nbsp;01</button>. All works &copy; Kingsley Zheng.</p>
   </div>
