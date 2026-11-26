@@ -46,7 +46,16 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .sr{min-width:0}
 /* a series: its works one under another at the full width, the first picture's top level with the top of the title */
 .sr.series{display:grid;gap:clamp(22px,3vh,32px);padding-top:var(--cap-top,0px)}
-.sr.series figure{width:fit-content;max-width:100%}
+.sr.series figure{width:fit-content;max-width:100%;scroll-margin-top:clamp(12px,2.5vw,32px)}
+/* scroll cue: a lime pill that rides the bottom of the screen through a long series, counting the works,
+   and fades away once the last one is in view (not used for the side-by-side pair) */
+.cue-wrap{position:sticky;bottom:clamp(14px,2.4vh,24px);height:0;justify-self:center;z-index:2}
+.cue{display:inline-flex;align-items:center;gap:10px;transform:translateY(-100%);padding:9px 16px 9px 14px;border:0;border-radius:999px;background:var(--acc);color:var(--on);font:500 13px/1 var(--ft);white-space:nowrap;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,.55);transition:opacity .35s,transform .35s}
+.cue .arr{display:inline-block;font-size:15px;animation:bob 1.4s ease-in-out infinite}
+.cue .cnt{padding-left:10px;border-left:1px solid rgba(5,5,5,.3);font-variant-numeric:tabular-nums}
+.cue:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+@keyframes bob{0%,100%{transform:translateY(-2px)}50%{transform:translateY(3px)}}
+.cue-wrap.done .cue{opacity:0;transform:translateY(-40%);pointer-events:none}
 /* a pair of tall works: side by side, filling the width together */
 .sr.pair{grid-template-columns:repeat(2,auto);justify-content:start;column-gap:20px}
 /* a single work: as large as fits, centred in the picture area */
@@ -87,7 +96,7 @@ figcaption b{color:var(--acc);font-weight:500}
 .titles li.open .ar{color:var(--acc);transform:rotate(90deg)}
 .brand{font-size:16px}
 }
-@media(prefers-reduced-motion:reduce){.rise,.cover.enter .titles li{animation:none}}
+@media(prefers-reduced-motion:reduce){.rise,.cover.enter .titles li,.cue .arr{animation:none}}
 </style>
 </head>
 <body>
@@ -179,9 +188,22 @@ const showGroup=(gi,animate)=>{
   const g=groups[gi];
   coverEl.querySelectorAll(".ti").forEach(b=>b.classList.toggle("on",+b.dataset.g===gi));
   sr.className="sr "+(g.items.length>1?"series":"single")+(g.pair?" pair":"");
-  sr.innerHTML=g.items.map((n,j)=>fig(n,false,animate?` class="rise" style="animation-delay:${j*70}ms"`:"")).join("");
-  sizeIndex();sharpen(sr);
+  coverEl.scrollTop=0;
+  sr.innerHTML=g.items.map((n,j)=>fig(n,false,animate?` class="rise" style="animation-delay:${j*70}ms"`:"")).join("")
+    +(g.items.length>1&&!g.pair?`<div class="cue-wrap"><button type="button" class="cue" aria-label="Scroll to the next work"><span class="arr" aria-hidden="true">&#8595;</span>Scroll<span class="cnt">1 / ${g.items.length}</span></button></div>`:"");
+  sizeIndex();sharpen(sr);updateCue();
 };
+/* the cue counts the work in view and disappears at the bottom of the series */
+const updateCue=()=>{
+  const wrap=sr.querySelector(".cue-wrap");if(!wrap)return;
+  const figs=[...sr.querySelectorAll("figure")],mid=coverEl.getBoundingClientRect().top+coverEl.clientHeight*.5;
+  let k=0;figs.forEach((f,i)=>{if(f.getBoundingClientRect().top<=mid)k=i});
+  wrap.querySelector(".cnt").textContent=`${k+1} / ${figs.length}`;
+  wrap.classList.toggle("done",coverEl.scrollTop+coverEl.clientHeight>=coverEl.scrollHeight-6);
+  return {figs,k};
+};
+let cueRaf=0;
+coverEl.addEventListener("scroll",()=>{cancelAnimationFrame(cueRaf);cueRaf=requestAnimationFrame(updateCue)},{passive:true});
 /* phone: a tap opens a title's works underneath it, and closes the one that was open */
 const openOnPhone=gi=>{
   const li=lis[gi],open=!li.classList.contains("open");
@@ -219,6 +241,7 @@ const closeZoom=()=>{zoom.hidden=true;if(lastFocus&&lastFocus.focus)lastFocus.fo
 zoom.addEventListener("click",closeZoom);
 
 coverEl.addEventListener("click",e=>{
+  if(e.target.closest(".cue")){const c=updateCue();if(c&&c.figs[c.k+1])c.figs[c.k+1].scrollIntoView({block:"start",behavior:introOK?"smooth":"auto"});return}
   const z=e.target.closest("[data-z]");
   if(z){const im=z.classList.contains("pic")?z.querySelector("img"):null;openZoom(+z.dataset.z,im?e:null,im);return}
   const t=e.target.closest(".ti");
@@ -233,7 +256,7 @@ const startG=m?Math.max(0,groups.findIndex(g=>g.items.includes(+m[1]))):0;
 showGroup(startG,introOK);
 if(phone.matches)openOnPhone(startG);
 if(introOK)setTimeout(()=>coverEl.classList.remove("enter"),1400);
-new ResizeObserver(sizeIndex).observe(coverEl);
+new ResizeObserver(()=>{sizeIndex();updateCue()}).observe(coverEl);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(sizeIndex);
 }
 </script>
