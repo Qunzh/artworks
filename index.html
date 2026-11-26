@@ -6,7 +6,7 @@
 <title>Artworks by Kingsley Zheng</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* VOICE occasion, hushed: a quiet exhibition of one artist's drawings
    IDEA a dark gallery room: each work hangs alone on its own wall, with a small wall label
@@ -34,7 +34,8 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
 .cap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:12px 0 clamp(12px,2.2vw,26px)}
 .no{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(26px,3vw,34px);line-height:1;white-space:nowrap}
-.ser{color:var(--mute);font-size:14px;white-space:nowrap}
+.ser{color:var(--mute);font-size:14px}
+.ser em{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(20px,2vw,24px);line-height:1.1;color:var(--ink)}
 .sib{display:flex;gap:6px}
 .sib button{padding:6px 0;border:0;background:none;cursor:pointer;opacity:.35;transition:opacity .2s}
 .sib button:hover{opacity:.7}
@@ -46,20 +47,18 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .cover h1{flex:0 1 auto;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(40px,5.6vw,76px);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
 .lede{flex:1 1 30ch;max-width:50ch;color:var(--mute);font-size:13px;line-height:1.6;margin:0;padding-bottom:.35em}
 .lede button{background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
-.wall{--th:120px;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:end;gap:clamp(18px,3vh,32px) clamp(40px,4vw,64px)}
-.rset{display:flex;justify-content:space-evenly;align-items:flex-end;gap:36px}
-.wall.wrap{display:flex;flex-wrap:wrap;align-items:flex-end;gap:18px 22px}
-.wall.wrap .rset{display:contents}
+.wall{--th:200px;border-bottom:1px solid var(--line)}
 .grp .row button{animation:drift var(--d,14s) ease-in-out var(--dl,0s) infinite alternate;will-change:transform}
 .wall.still .grp .row button{animation-play-state:paused}
 .wall.pre{visibility:hidden}
 @keyframes drift{0%{transform:translate(0,0)}33%{transform:translate(var(--x1),var(--y1))}66%{transform:translate(var(--x2),var(--y2))}100%{transform:translate(var(--x3),var(--y3))}}
-.grp{display:flex;flex-direction:column;gap:14px}
-.grp .row{display:flex;gap:14px}
+.grp{display:grid;grid-template-columns:minmax(160px,21%) minmax(0,1fr);gap:16px clamp(28px,4vw,64px);align-items:start;padding:clamp(20px,3.2vh,30px) 0;border-top:1px solid var(--line)}
+.grp h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(23px,1.9vw,29px);line-height:1.12;margin:0;text-wrap:balance}
+/* row gap keeps wrapped works apart even when two drift toward each other */
+.grp .row{display:flex;flex-wrap:wrap;align-items:flex-end;gap:24px 14px}
 .grp button{padding:0;border:0;background:none;cursor:pointer;display:block}
 .grp img{height:var(--th);width:auto;display:block;transition:opacity .2s}
 .grp button:hover img{opacity:.75}
-.grp span{font-size:13px;color:var(--mute);white-space:nowrap}
 .zoom{position:fixed;inset:0;z-index:10;background:#0b0b0b;overflow:auto;cursor:zoom-out;overscroll-behavior:contain}
 .zoom[hidden]{display:none}
 .zoom img{display:block;max-width:none;margin:auto}
@@ -72,6 +71,7 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .cap{gap:6px 16px}
 .detail{display:none}
 }
+@media(max-width:700px){.grp{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){.deck{scroll-behavior:auto}.grp .row button{animation:none}}
 </style>
 </head>
@@ -91,72 +91,68 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 <script>
 {
 const DIMS=[[2400,1873],[2400,1902],[2400,1842],[2400,1681],[2400,1669],[2400,1674],[2400,1692],[2400,1732],[2400,1562],[2400,1650],[2400,1718],[1037,2400],[976,2400],[2400,1678],[2400,1729],[2400,1734],[2400,1728],[2400,1716],[914,1484]];
-const SERIES=[["I",[1,2,3]],["II",[4,5,6]],["III",[7,8,9]],["IV",[12,13]],["V",[15,16]],["VI",[17,18]]];
+/* titles are the artist's own */
+const SERIES=[["I",[1,2,3],"Invisible Hands"],["II",[4,5,6],"Strings"],["III",[7,8,9],"It’s not upright, it’s flat"],["IV",[12,13],"Studies on Butterfly patterns"],["V",[15,16],"Birth (Uncompleted)"],["VI",[17,18],"Stuck"]];
+const SINGLE={10:"Study on Concave and Convex",11:"Study on Goldfish in a plastic bag",14:"Cosmos of Smoke & Strawberry milk",19:"Butterfly on a leaf (Uncompleted)"};
 const N=DIMS.length;
 const pad=n=>String(n).padStart(2,"0");
 const serOf=n=>SERIES.find(s=>s[1].includes(n));
 const big=n=>`works/${pad(n)}.jpg`;
 const small=n=>`thumbs/${pad(n)}.jpg`;
-const label=n=>{const s=serOf(n);return s?`No. ${pad(n)}, Series ${s[0]}, ${s[1].indexOf(n)+1} of ${s[1].length}`:`No. ${pad(n)}`};
+const titleOf=n=>{const s=serOf(n);return s?s[2]:SINGLE[n]};
+const part=n=>{const s=serOf(n);return s?`${s[1].indexOf(n)+1} of ${s[1].length}`:""};
+const label=n=>`No. ${pad(n)}, ${titleOf(n)}${part(n)?", "+part(n):""}`;
+const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 
 /* the opening wall: every work, hung in its series */
 const groups=[];
 for(let n=1;n<=N;n++){
   const s=serOf(n);
   if(s&&s[1][0]!==n)continue;
-  groups.push(s?{name:`Series ${s[0]}`,items:s[1]}:{name:`No. ${pad(n)}`,items:[n]});
+  groups.push({name:titleOf(n),items:s?s[1]:[n]});
 }
-/* three rows: a three-part series on the left, the smaller works beside it */
 const AR=n=>DIMS[n-1][0]/DIMS[n-1][1];
 const grpAR=g=>g.items.reduce((s,n)=>s+AR(n),0);
-const byFirst=n=>groups.find(g=>g.items[0]===n);
-const LAYOUT=[[1,[10,11,12]],[4,[14,15]],[7,[17,19]]];
-const ROWS=LAYOUT.map(([l,r])=>({left:byFirst(l),right:r.map(byFirst)}));
 /* each thumbnail drifts on its own slow, small path */
 let seed=11;
 const rnd=()=>(seed=seed*16807%2147483647)/2147483647;
 const v=a=>((rnd()*2-1)*a).toFixed(2);
 /* sideways drift stays under half the 14px gap between neighbours, so works never touch */
 const drift=()=>`--d:${(12+rnd()*8).toFixed(1)}s;--dl:-${(rnd()*16).toFixed(1)}s;--x1:${v(5)}px;--y1:${v(10)}px;--x2:${v(5)}px;--y2:${v(10)}px;--x3:${v(5)}px;--y3:${v(10)}px`;
-const thumb=n=>{const[w,h]=DIMS[n-1];return `<button type="button" data-go="${n}" aria-label="Open ${label(n)}" style="${drift()}"><img src="${small(n)}" width="${Math.round(640*w/Math.max(w,h))}" height="${Math.round(640*h/Math.max(w,h))}" alt=""></button>`};
+const thumb=n=>{const[w,h]=DIMS[n-1];return `<button type="button" data-go="${n}" aria-label="Open ${esc(label(n))}" style="${drift()}"><img src="${small(n)}" width="${Math.round(640*w/Math.max(w,h))}" height="${Math.round(640*h/Math.max(w,h))}" alt=""></button>`};
 /* opening: the works start gathered in one pile and scatter to their places (only when the index is the first view) */
 const introOK=!matchMedia("(prefers-reduced-motion: reduce)").matches&&!/^#work-/.test(location.hash);
-const grpHtml=g=>`<div class="grp"><div class="row">${g.items.map(thumb).join("")}</div><span>${g.name}</span></div>`;
+/* one room per series or single work: its name on the left, the works beside it */
+const grpHtml=g=>`<div class="grp"><h2>${esc(g.name)}</h2><div class="row">${g.items.map(thumb).join("")}</div></div>`;
 const cover=`<section class="slide cover" aria-label="Index">
   <div class="head">
     <h1>Artworks by Kingsley Zheng</h1>
     <p class="lede">Nineteen works: six series and four single pieces. Choose a work, swipe, or use the arrow keys to walk through them in order, <button type="button" data-go="1">starting with No.&nbsp;01</button>. All works &copy; Kingsley Zheng.</p>
   </div>
-  <div class="wall${introOK?" pre":""}">${ROWS.map(r=>grpHtml(r.left)+`<div class="rset">${r.right.map(grpHtml).join("")}</div>`).join("")}</div>
+  <div class="wall${introOK?" pre":""}">${groups.map(grpHtml).join("")}</div>
 </section>`;
 
 /* one wall per work */
 const slide=n=>{
   const[w,h]=DIMS[n-1];const s=serOf(n);
-  const sib=s?`<div class="sib">${s[1].map(m=>`<button type="button" data-go="${m}" aria-label="${label(m)}"${m===n?' aria-current="true"':""}><img src="${small(m)}" alt="" loading="lazy"></button>`).join("")}</div>`:"";
-  return `<section class="slide" id="w${n}" aria-label="${label(n)}">
-  <div class="art" data-z="${n}"><img src="${big(n)}" width="${w}" height="${h}" alt="${label(n)}, by Kingsley Zheng" loading="${n<3?"eager":"lazy"}" decoding="async"></div>
-  <div class="cap"><span class="no">No. ${pad(n)}</span>${s?`<span class="ser">Series ${s[0]}, ${s[1].indexOf(n)+1} of ${s[1].length}</span>`:""}${sib}<button class="btn detail" type="button" data-z="${n}">View detail</button></div>
+  const sib=s?`<div class="sib">${s[1].map(m=>`<button type="button" data-go="${m}" aria-label="${esc(label(m))}"${m===n?' aria-current="true"':""}><img src="${small(m)}" alt="" loading="lazy"></button>`).join("")}</div>`:"";
+  return `<section class="slide" id="w${n}" aria-label="${esc(label(n))}">
+  <div class="art" data-z="${n}"><img src="${big(n)}" width="${w}" height="${h}" alt="${esc(label(n))}, by Kingsley Zheng" loading="${n<3?"eager":"lazy"}" decoding="async"></div>
+  <div class="cap"><span class="no">No. ${pad(n)}</span><span class="ser"><em>${esc(titleOf(n))}</em>${s?`, ${part(n)}`:""}</span>${sib}<button class="btn detail" type="button" data-z="${n}">View detail</button></div>
 </section>`};
 
 const deck=document.getElementById("deck");
 deck.innerHTML=cover+Array.from({length:N},(_,i)=>slide(i+1)).join("");
 
-/* size the wall: rows as wide as the page allows, all three rows on the first screen when there is room */
+/* size the rooms: one height for every work, as large as lets the widest series sit on one line
+   (capped so a room stays well inside the screen; phones keep works legible and let a series wrap) */
 const coverEl=deck.querySelector(".cover"),wall=deck.querySelector(".wall");
-const IG=14,GG=36,LABEL=36;
-const intra=g=>IG*(g.items.length-1);
+const IG=14;
 const fitWall=()=>{
-  const W=wall.clientWidth;if(!W)return;
-  const colGap=Math.min(64,Math.max(40,innerWidth*.04)),rowGap=Math.min(32,Math.max(18,innerHeight*.03));
-  const leftAR=Math.max(...ROWS.map(r=>grpAR(r.left))),leftIn=Math.max(...ROWS.map(r=>intra(r.left)));
-  const wTh=Math.min(...ROWS.map(r=>(W-colGap-leftIn-r.right.reduce((s,g)=>s+intra(g),0)-GG*(r.right.length-1))/(leftAR+r.right.reduce((s,g)=>s+grpAR(g),0))));
-  if(wTh<70){wall.classList.add("wrap");wall.style.setProperty("--th",(W<420?64:76)+"px");return}
-  wall.classList.remove("wrap");
-  const cs=getComputedStyle(coverEl);
-  const avail=coverEl.getBoundingClientRect().bottom-wall.getBoundingClientRect().top-coverEl.scrollTop-parseFloat(cs.paddingBottom||0);
-  const hTh=(avail-2*rowGap)/3-LABEL;
-  const th=Math.max(Math.min(wTh,hTh),Math.min(wTh,120));
+  const row=wall.querySelector(".row"),W=row&&row.clientWidth;if(!W)return;
+  const fit=Math.min(...groups.map(g=>(W-IG*(g.items.length-1))/grpAR(g)));
+  const cap=Math.min(220,Math.max(140,innerHeight*.28));
+  const th=Math.min(cap,Math.max(innerWidth<600?96:64,fit));
   wall.style.setProperty("--th",Math.floor(th)+"px");
 };
 const wallRO=new ResizeObserver(fitWall);
@@ -239,7 +235,7 @@ const intro=()=>{
       const dx=cx-(r.left+r.width/2)+(rnd()*2-1)*44,dy=cy-(r.top+r.height/2)+(rnd()*2-1)*26;
       im.animate([{transform:`translate(${dx}px,${dy}px) scale(.5)`},{transform:"none"}],{duration:2000+rnd()*900,delay:350+i*28,easing:"cubic-bezier(.16,1,.3,1)",fill:"backwards"});
     });
-    wall.querySelectorAll(".grp span").forEach((s,i)=>s.animate([{opacity:0},{opacity:1}],{duration:900,delay:1500+i*50,fill:"backwards"}));
+    wall.querySelectorAll(".grp h2").forEach((s,i)=>s.animate([{opacity:0},{opacity:1}],{duration:900,delay:1500+i*50,fill:"backwards"}));
   }catch(e){}
   wall.classList.remove("pre");
 };
