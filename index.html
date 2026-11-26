@@ -9,124 +9,96 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500&family=Syne:wght@600;700&display=swap" rel="stylesheet">
 <style>
-/* VOICE occasion, hushed: a quiet exhibition of one artist's drawings
-   IDEA a dark gallery room: each work hangs alone on its own wall, with a small wall label
-   PICTURE the works themselves, as large as the screen allows; the opening page lists the titles and shows the works of the one you point at
-   COLOUR pure black ground in both themes, white ink, grey for labels, acid lime for the top bar and small details
+/* VOICE occasion, hushed: a small exhibition of one artist's drawings
+   IDEA one page: the titles of every series down the left; point at one and its works hang on the right
+   PICTURE the works themselves, out to the page's right margin; any work opens full size for a closer look
+   COLOUR pure black ground in both themes, white ink, grey for labels, acid lime for the top bar, the chosen title and small details
    TYPE Syne (bold, wide) for the title, names and numbers; Manrope for labels
-   LAYOUT a lime bar on top; the index is a split view, titles left and works right; each series then gets its own sliding page. Phone: titles with small pictures, stacked */
+   LAYOUT a lime bar on top; titles left, works right: a series hangs one work under another (a pair of tall works side by side),
+          a single work sits centred. Phone: one list; tap a title to open its works underneath */
 :root{color-scheme:dark;--bg:#050505;--ink:#f4f4f1;--mute:#8d8d88;--line:#222222;--acc:#d7ff3d;--on:#050505;--fd:Syne,'Helvetica Neue',Arial,sans-serif;--ft:Manrope,system-ui,-apple-system,sans-serif}
 :root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--ink);font:16px/1.55 var(--ft);display:grid;grid-template-rows:auto minmax(0,1fr);overflow:hidden}
 button{font:inherit;color:inherit}
-/* the top bar is one solid lime band with black type, on every page */
-.bar{display:flex;align-items:center;gap:8px;padding:6px max(16px,3vw);background:var(--acc);color:var(--on);border-bottom:1px solid var(--acc)}
-.brand{margin-right:auto;background:none;border:0;padding:0 4px 0 0;min-height:44px;font-family:var(--fd);font-size:18px;font-weight:700;letter-spacing:-.02em;cursor:pointer;white-space:nowrap}
-.count{color:var(--on);font-size:14px;font-variant-numeric:tabular-nums;white-space:nowrap;padding:0 8px}
-.btn{min-width:44px;min-height:44px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:transparent;font-size:14px;cursor:pointer;white-space:nowrap}
-.btn:hover{border-color:var(--mute)}
-.btn:disabled{opacity:.3;cursor:default;border-color:var(--line)}
 button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
-.bar .btn{border-color:rgba(5,5,5,.3)}
-.bar .btn:hover{border-color:var(--on)}
-.bar .btn:disabled{border-color:rgba(5,5,5,.3)}
+/* the top bar is one solid lime band with black type */
+.bar{display:flex;align-items:center;gap:8px;padding:6px max(16px,3vw);background:var(--acc);color:var(--on)}
+.brand{margin-right:auto;background:none;border:0;padding:0 4px 0 0;min-height:44px;font-family:var(--fd);font-size:18px;font-weight:700;letter-spacing:-.02em;cursor:pointer;white-space:nowrap}
 .bar button:focus-visible{outline-color:var(--on)}
-.deck{display:flex;height:100%;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:none}
-.deck::-webkit-scrollbar{display:none}
-.slide{flex:0 0 100%;width:100%;height:100%;scroll-snap-align:start;scroll-snap-stop:always;display:grid;grid-template-rows:minmax(0,1fr) auto;padding:clamp(12px,2.5vw,32px) max(16px,3vw) 0}
-.art{position:relative;min-height:0;cursor:zoom-in}
-.art img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
-.cap{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;padding:12px 0 clamp(12px,2.2vw,26px)}
-.no{font-family:var(--fd);font-weight:700;font-size:clamp(20px,2.3vw,26px);letter-spacing:-.02em;line-height:1;white-space:nowrap;color:var(--acc)}
-.ser{color:var(--mute);font-size:14px}
-.detail{margin-left:auto}
-/* a series page: its title and dots stay put; the works slide in a track, neighbours dimmed at the edges */
-.room-page{grid-template-rows:auto minmax(0,1fr);padding:clamp(12px,2.2vw,28px) 0 0}
-.rhead{display:flex;align-items:center;justify-content:space-between;gap:8px 20px;padding:0 max(16px,3vw) clamp(10px,1.8vw,20px)}
-.rhead h2{font-family:var(--fd);font-weight:700;font-size:clamp(20px,2vw,27px);letter-spacing:-.025em;line-height:1.15;margin:0;text-wrap:balance}
-.dots{display:flex;flex:none}
-.dots button{width:30px;height:30px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center}
-.dots button::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mute);opacity:.5;transition:background .3s,opacity .3s,transform .3s}
-.dots button[aria-current]::before{background:var(--acc);opacity:1;transform:scale(1.15)}
-.track{position:relative;display:flex;gap:clamp(16px,2.6vw,44px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none}
-.track::-webkit-scrollbar{display:none}
-.track::before{content:"";flex:0 0 var(--sl,0px)}
-.track::after{content:"";flex:0 0 var(--sr,0px)}
-.item{flex:0 0 var(--w,60%);margin:0;display:flex;flex-direction:column;justify-content:center;scroll-snap-align:center;scroll-snap-stop:always;opacity:.28;transition:opacity .45s}
-.item.on{opacity:1}
-.item:not(.on),.item:not(.on) .art{cursor:pointer}
-.item:not(.on):hover{opacity:.5}
-.item:not(.on) .detail{visibility:hidden}
-.item .art{flex:none;width:var(--w);height:var(--h)}
-.cover{display:block;overflow-x:hidden;overflow-y:auto;padding-bottom:clamp(20px,3vw,40px)}
-/* the index: titles on the left; point at one and its works appear on the right */
+
+/* the index is the whole site; the page margin is the same on both sides, and the pictures run out to it */
+.cover{height:100%;overflow-x:hidden;overflow-y:auto;padding:clamp(12px,2.5vw,32px) max(16px,3vw) clamp(20px,3vw,40px)}
 .split{display:grid;grid-template-columns:minmax(300px,36%) minmax(0,1fr);gap:clamp(32px,4.2vw,64px);align-items:start}
 .sl{position:sticky;top:0}
 .cover h1{font-family:var(--fd);font-weight:700;font-size:clamp(30px,3.1vw,46px);line-height:1.05;letter-spacing:-.035em;margin:0;text-wrap:balance}
-.lede{color:var(--mute);font-size:13px;line-height:1.6;margin:10px 0 clamp(18px,3vh,28px);max-width:46ch}
+.lede{color:var(--mute);font-size:13px;line-height:1.6;margin:10px 0 clamp(18px,3vh,28px)}
 .titles{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 .titles li{border-bottom:1px solid var(--line)}
 .ti{display:grid;grid-template-columns:clamp(52px,4.6vw,66px) minmax(0,1fr) 22px;align-items:baseline;width:100%;padding:clamp(7px,1.1vh,10px) 0;border:0;background:none;text-align:left;cursor:pointer;color:var(--mute);font-family:var(--fd);font-weight:700;font-size:clamp(17px,1.6vw,23px);line-height:1.12;letter-spacing:-.025em;transition:color .2s}
 .ti .rng{font:500 13px/1 var(--ft);letter-spacing:.02em;color:var(--mute);transition:color .2s}
 .ti .ar{color:transparent;font-size:.8em;text-align:right;transition:color .2s,transform .2s}
-.ti:hover,.ti.on{color:var(--ink)}
+.ti:hover,.ti.on{color:var(--acc)}
 .ti.on .rng,.ti.on .ar{color:var(--acc)}
 .ti:hover .ar{transform:translateX(3px)}
-.mini{display:none}
+.drawer{display:none}
 .sr{min-width:0}
-/* a series: its works one under another, the first picture's top level with the top of the title */
+/* a series: its works one under another at the full width, the first picture's top level with the top of the title */
 .sr.series{display:grid;gap:clamp(22px,3vh,32px);padding-top:var(--cap-top,0px)}
-/* a single work: centred in the picture area */
+.sr.series figure{width:fit-content;max-width:100%}
+/* a pair of tall works: side by side, filling the width together */
+.sr.pair{grid-template-columns:repeat(2,auto);justify-content:start;column-gap:20px}
+/* a single work: as large as fits, centred in the picture area */
 .sr.single{position:sticky;top:0;height:var(--avail,70vh);display:flex;align-items:center;justify-content:center}
-.sr figure{margin:0}
-.pic{display:block;padding:0;border:0;background:none;cursor:pointer}
+figure{margin:0}
+.pic{display:block;padding:0;border:0;background:none;cursor:zoom-in}
 .pic img{display:block;transition:opacity .2s}
 .pic:hover img{opacity:.85}
-.sr figcaption{font-size:12.5px;color:var(--mute);margin-top:8px}
-.sr figcaption b{color:var(--acc);font-weight:500;margin-right:8px}
+figcaption{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;font-size:12.5px;color:var(--mute);margin-top:10px}
+figcaption b{color:var(--acc);font-weight:500}
+.vd{margin-left:auto;border:1px solid var(--line);border-radius:999px;background:none;padding:5px 12px;font-size:12.5px;color:var(--ink);cursor:pointer;white-space:nowrap;transition:border-color .2s,color .2s}
+.vd:hover{border-color:var(--acc);color:var(--acc)}
 .rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}}
 .cover.enter .titles li{animation:rise .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*45ms + 120ms)}
+
+/* detail view at full resolution */
 .zoom{position:fixed;inset:0;z-index:10;background:#000;overflow:auto;cursor:zoom-out;overscroll-behavior:contain}
 .zoom[hidden]{display:none}
 .zoom img{display:block;max-width:none;margin:auto}
-.zoom .btn{position:fixed;top:12px;right:max(16px,3vw);background:var(--bg)}
-@media(max-width:600px){
-.bar{gap:4px}
-.brand{font-size:16px}
-.btn{padding:0 12px}
-.idx{display:none}
-.cap{gap:6px 16px}
-.detail{display:none}
-}
-/* phone: no split; each title carries its own small pictures, and a tap opens the series */
+.zclose{position:fixed;top:12px;right:max(16px,3vw);min-width:44px;min-height:44px;padding:0 16px;border:1px solid var(--acc);border-radius:999px;background:var(--acc);color:var(--on);font-size:14px;cursor:pointer}
+.zclose:focus-visible{outline-color:var(--acc)}
+.zlabel{position:fixed;left:max(16px,3vw);bottom:14px;margin:0;padding:6px 12px;border-radius:999px;background:rgba(5,5,5,.75);font-size:13px;pointer-events:none}
+.zlabel b{color:var(--acc);font-weight:500;margin-right:8px}
+
+/* phone: no split; tap a title to open its works underneath */
 @media(max-width:760px){
 .split{grid-template-columns:1fr}
 .sl{position:static}
 .sr,.sr.series,.sr.single{display:none}
-.mini{display:flex;flex-wrap:wrap;gap:8px;padding:0 0 12px clamp(52px,4.6vw,66px)}
-.mini img{height:58px;width:auto}
+.titles li.open .drawer{display:grid;gap:24px;padding:6px 0 24px}
+.titles li.open .drawer.pair{gap:24px 12px}
+.drawer img{width:100%;height:auto}
 .ti,.ti.on{color:var(--ink)}
 .ti .rng,.ti.on .rng{color:var(--acc)}
 .ti .ar,.ti.on .ar{color:var(--mute)}
+.titles li.open .ti{color:var(--acc)}
+.titles li.open .ar{color:var(--acc);transform:rotate(90deg)}
+.brand{font-size:16px}
 }
-@media(prefers-reduced-motion:reduce){.deck{scroll-behavior:auto}.rise,.cover.enter .titles li{animation:none}}
+@media(prefers-reduced-motion:reduce){.rise,.cover.enter .titles li{animation:none}}
 </style>
 </head>
 <body>
 <header class="bar">
   <button class="brand" id="home" type="button">Kingsley Zheng</button>
-  <span class="count" id="count" aria-live="polite">19 works</span>
-  <button class="btn idx" id="index" type="button">Index</button>
-  <button class="btn" id="prev" type="button" aria-label="Previous work">&#8592;</button>
-  <button class="btn" id="next" type="button" aria-label="Next work">&#8594;</button>
 </header>
-<main class="deck" id="deck" tabindex="-1"></main>
+<main class="cover" id="cover" tabindex="-1" aria-label="Index"></main>
 <div class="zoom" id="zoom" hidden>
   <img id="zimg" alt="">
-  <button class="btn" id="zclose" type="button">Close</button>
+  <p class="zlabel" id="zlabel"></p>
+  <button class="zclose" id="zclose" type="button">Close</button>
 </div>
 <script>
 {
@@ -143,46 +115,38 @@ const titleOf=n=>{const s=serOf(n);return s?s[2]:SINGLE[n]};
 const part=n=>{const s=serOf(n);return s?`${s[1].indexOf(n)+1} of ${s[1].length}`:""};
 const label=n=>`No. ${pad(n)}, ${titleOf(n)}${part(n)?", "+part(n):""}`;
 const esc=t=>t.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const AR=n=>DIMS[n-1][0]/DIMS[n-1][1];
 
-/* the series and single works, in order */
+/* the series and single works, in order; a series of tall works hangs as a side-by-side pair */
 const groups=[];
 for(let n=1;n<=N;n++){
   const s=serOf(n);
   if(s&&s[1][0]!==n)continue;
-  groups.push({name:titleOf(n),items:s?s[1]:[n]});
+  const items=s?s[1]:[n];
+  groups.push({name:titleOf(n),items,pair:items.length>1&&items.every(m=>AR(m)<1)});
 }
-const AR=n=>DIMS[n-1][0]/DIMS[n-1][1];
 const rngOf=g=>g.items.length>1?`${pad(g.items[0])}–${pad(g.items[g.items.length-1])}`:pad(g.items[0]);
-const mini=n=>{const[w,h]=DIMS[n-1];return `<button type="button" class="pic" data-go="${n}" aria-label="Open ${esc(label(n))}"><img src="${small(n)}" width="${Math.round(640*w/Math.max(w,h))}" height="${Math.round(640*h/Math.max(w,h))}" alt="" loading="lazy"></button>`};
-/* gentle opening: the titles rise in one by one (only when the index is the first view) */
-const introOK=!matchMedia("(prefers-reduced-motion: reduce)").matches&&!/^#work-/.test(location.hash);
-const cover=`<section class="slide cover${introOK?" enter":""}" aria-label="Index">
-  <div class="split">
-    <div class="sl">
-      <h1>Artworks by Kingsley Zheng</h1>
-      <p class="lede">Nineteen works: six series and four single pieces. All works &copy; Kingsley Zheng.</p>
-      <ul class="titles">${groups.map((g,i)=>`<li style="--i:${i}"><button type="button" class="ti" data-g="${i}" data-go="${g.items[0]}"><span class="rng">${rngOf(g)}</span><span>${esc(g.name)}</span><span class="ar" aria-hidden="true">&#8594;</span></button><div class="mini">${g.items.map(mini).join("")}</div></li>`).join("")}</ul>
-    </div>
-    <div class="sr" id="sr" aria-live="polite"></div>
+/* one work: the picture opens the detail view, and so does the button in its label */
+const fig=(n,lazy,anim)=>{const[w,h]=DIMS[n-1];return `<figure${anim||""}><button type="button" class="pic" data-z="${n}" aria-label="View ${esc(label(n))} in detail"><img src="${small(n)}" width="${Math.round(640*w/Math.max(w,h))}" height="${Math.round(640*h/Math.max(w,h))}" alt="${esc(label(n))}, by Kingsley Zheng"${lazy?' loading="lazy"':""}></button><figcaption><b>No. ${pad(n)}</b>${serOf(n)?`<span>${part(n)}</span>`:""}<button type="button" class="vd" data-z="${n}">View detail</button></figcaption></figure>`};
+
+/* gentle opening: the titles rise in one by one */
+const introOK=!matchMedia("(prefers-reduced-motion: reduce)").matches;
+const coverEl=document.getElementById("cover");
+if(introOK)coverEl.classList.add("enter");
+coverEl.innerHTML=`<div class="split">
+  <div class="sl">
+    <h1>Artworks by Kingsley Zheng</h1>
+    <p class="lede">All works &copy; Kingsley Zheng.</p>
+    <ul class="titles">${groups.map((g,i)=>`<li style="--i:${i}"><button type="button" class="ti" data-g="${i}" aria-expanded="false"><span class="rng">${rngOf(g)}</span><span>${esc(g.name)}</span><span class="ar" aria-hidden="true">&#8594;</span></button><div class="drawer${g.pair?" pair":""}"${g.pair?` style="grid-template-columns:${g.items.map(n=>(AR(n)*10).toFixed(3)+"fr").join(" ")}"`:""}>${g.items.map(n=>fig(n,true)).join("")}</div></li>`).join("")}</ul>
   </div>
-</section>`;
+  <div class="sr" id="sr" aria-live="polite"></div>
+</div>`;
+const sr=document.getElementById("sr"),h1=coverEl.querySelector("h1"),lis=[...coverEl.querySelectorAll(".titles li")];
+const phone=matchMedia("(max-width: 760px)");
 
-/* one page per series: its works sit in a sliding track, neighbours peeking; a single work gets the same page on its own.
-   Each work's label travels with it; the title and dots stay put. */
-const roomPage=(g,k)=>{
-  const multi=g.items.length>1;
-  const dots=multi?`<div class="dots">${g.items.map(n=>`<button type="button" data-go="${n}" aria-label="${esc(label(n))}"></button>`).join("")}</div>`:"";
-  const items=g.items.map(n=>{const[w,h]=DIMS[n-1];return `<figure class="item" data-n="${n}">
-    <div class="art" data-z="${n}"><img src="${big(n)}" width="${w}" height="${h}" alt="${esc(label(n))}, by Kingsley Zheng" loading="${k<1?"eager":"lazy"}" decoding="async"></div>
-    <figcaption class="cap"><span class="no">No. ${pad(n)}</span>${multi?`<span class="ser">${part(n)}</span>`:""}<button class="btn detail" type="button" data-z="${n}">View detail</button></figcaption>
-  </figure>`}).join("");
-  return `<section class="slide room-page" aria-label="${esc(g.name)}"><header class="rhead"><h2>${esc(g.name)}</h2>${dots}</header><div class="track">${items}</div></section>`;
-};
+/* the small picture shows at once; the full one replaces it when it arrives */
+const sharpen=root=>root.querySelectorAll(".pic img").forEach(im=>{const n=+im.parentNode.dataset.z;if(im.src.endsWith(big(n)))return;const b=new Image();b.onload=()=>{if(im.isConnected)im.src=b.src};b.src=big(n)});
 
-const deck=document.getElementById("deck");
-deck.innerHTML=cover+groups.map(roomPage).join("");
-
-const coverEl=deck.querySelector(".cover"),sr=deck.querySelector("#sr"),h1=coverEl.querySelector("h1");
 /* how far below the top of its line box the tallest letter of the title starts */
 const titleTop=()=>{
   try{
@@ -194,111 +158,45 @@ const titleTop=()=>{
     return (lh-(m.fontBoundingBoxAscent+m.fontBoundingBoxDescent))/2+m.fontBoundingBoxAscent-m.actualBoundingBoxAscent;
   }catch(e){return 0}
 };
-/* pictures as large as the column allows: a series capped so a work fits on screen, a single work filling the picture area */
+/* every picture as large as the column: a series at the full width (a pair filling it together),
+   a single work as large as fits on screen, centred */
 const sizeIndex=()=>{
   const cs=getComputedStyle(coverEl);
   const avail=coverEl.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
   coverEl.style.setProperty("--avail",avail+"px");
   sr.style.setProperty("--cap-top",Math.max(0,titleTop()).toFixed(1)+"px");
   const W=sr.clientWidth;if(!W)return;
-  const single=sr.classList.contains("single");
-  const maxH=single?avail-44:Math.min(560,innerHeight*.64);
-  sr.querySelectorAll(".pic img").forEach(im=>{const ar=AR(+im.parentNode.dataset.go),w=Math.min(W,maxH*ar);im.style.width=Math.floor(w)+"px";im.style.height=Math.floor(w/ar)+"px"});
+  const imgs=[...sr.querySelectorAll(".pic img")],arOf=im=>AR(+im.parentNode.dataset.z);
+  const set=(im,w)=>{im.style.width=Math.floor(w)+"px";im.style.height=Math.floor(w/arOf(im))+"px"};
+  if(sr.classList.contains("single"))imgs.forEach(im=>set(im,Math.min(W,(avail-54)*arOf(im))));
+  else if(sr.classList.contains("pair")){const gap=parseFloat(getComputedStyle(sr).columnGap)||0,h=(W-gap*(imgs.length-1))/imgs.reduce((s,im)=>s+arOf(im),0);imgs.forEach(im=>set(im,h*arOf(im)))}
+  else imgs.forEach(im=>set(im,W));
 };
+/* computer: the chosen title turns lime and its works hang on the right */
 let shown=-1;
 const showGroup=(gi,animate)=>{
   if(gi===shown)return;shown=gi;
-  const g=groups[gi],multi=g.items.length>1;
-  deck.querySelectorAll(".ti").forEach(b=>b.classList.toggle("on",+b.dataset.g===gi));
-  sr.className="sr "+(multi?"series":"single");
-  sr.innerHTML=g.items.map((n,j)=>`<figure${animate?` class="rise" style="animation-delay:${j*70}ms"`:""}><button type="button" class="pic" data-go="${n}" aria-label="Open ${esc(label(n))}"><img src="${small(n)}" alt="${esc(label(n))}, by Kingsley Zheng"></button><figcaption><b>No. ${pad(n)}</b>${multi?part(n):""}</figcaption></figure>`).join("");
-  sizeIndex();
-  /* the small picture shows at once; the full one replaces it when it arrives */
-  sr.querySelectorAll(".pic img").forEach(im=>{const n=+im.parentNode.dataset.go,b=new Image();b.onload=()=>{if(im.isConnected)im.src=b.src};b.src=big(n)});
+  const g=groups[gi];
+  coverEl.querySelectorAll(".ti").forEach(b=>b.classList.toggle("on",+b.dataset.g===gi));
+  sr.className="sr "+(g.items.length>1?"series":"single")+(g.pair?" pair":"");
+  sr.innerHTML=g.items.map((n,j)=>fig(n,false,animate?` class="rise" style="animation-delay:${j*70}ms"`:"")).join("");
+  sizeIndex();sharpen(sr);
 };
-const pick=e=>{const t=e.target.closest(".ti");if(t&&e.pointerType!=="touch")showGroup(+t.dataset.g,true)};
-coverEl.addEventListener("pointerover",pick);
-coverEl.addEventListener("focusin",e=>{const t=e.target.closest(".ti");if(t)showGroup(+t.dataset.g,true)});
-showGroup(0,introOK);
-if(introOK)setTimeout(()=>coverEl.classList.remove("enter"),1400);
-new ResizeObserver(sizeIndex).observe(coverEl);
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(sizeIndex);
-
-const count=document.getElementById("count"),prev=document.getElementById("prev"),next=document.getElementById("next");
-const reduce=matchMedia("(prefers-reduced-motion: reduce)");
-let cur=-1;
-const pages=[...deck.querySelectorAll(".slide")];
-const tracks=pages.map(pg=>pg.querySelector(".track"));
-const pageOf=i=>i===0?0:groups.findIndex(g=>g.items.includes(i))+1;
-const deckPage=()=>Math.round(deck.scrollLeft/Math.max(1,deck.clientWidth));
-const itemsOf=tr=>[...tr.querySelectorAll(".item")];
-const itemOf=n=>deck.querySelector(`.item[data-n="${n}"]`);
-/* each work as large as the track allows, but no wider than ~70% of the page so its neighbours show */
-const layoutTracks=()=>{
-  const W=deck.clientWidth;if(!W)return;
-  const maxW=W*(W<700?.8:.68);
-  tracks.forEach(tr=>{
-    if(!tr)return;
-    const its=itemsOf(tr),capH=its[0].querySelector(".cap").offsetHeight;
-    const H=Math.max(100,tr.clientHeight-capH),gap=parseFloat(getComputedStyle(tr).columnGap)||0;
-    let wf=0,wl=0;
-    its.forEach((it,j)=>{const ar=AR(+it.dataset.n),w=Math.floor(Math.min(maxW,H*ar));it.style.setProperty("--w",w+"px");it.style.setProperty("--h",Math.floor(w/ar)+"px");if(!j)wf=w;wl=w});
-    tr.style.setProperty("--sl",Math.max(0,(W-wf)/2-gap)+"px");
-    tr.style.setProperty("--sr",Math.max(0,(W-wl)/2-gap)+"px");
-  });
+/* phone: a tap opens a title's works underneath it, and closes the one that was open */
+const openOnPhone=gi=>{
+  const li=lis[gi],open=!li.classList.contains("open");
+  lis.forEach(l=>{l.classList.remove("open");l.querySelector(".ti").setAttribute("aria-expanded","false")});
+  if(!open)return;
+  li.classList.add("open");li.querySelector(".ti").setAttribute("aria-expanded","true");
+  sharpen(li);
+  requestAnimationFrame(()=>li.scrollIntoView({block:"start",behavior:introOK?"smooth":"auto"}));
 };
-const centre=(tr,it,behavior)=>tr.scrollTo({left:it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2,behavior});
-/* the work in the middle of a track is lit, with its dot */
-const markOn=tr=>{
-  const mid=tr.scrollLeft+tr.clientWidth/2;let best=null,bd=Infinity;
-  itemsOf(tr).forEach(it=>{const d=Math.abs(it.offsetLeft+it.offsetWidth/2-mid);if(d<bd){bd=d;best=it}});
-  itemsOf(tr).forEach(it=>it.classList.toggle("on",it===best));
-  const n=+best.dataset.n;
-  tr.parentNode.querySelectorAll(".dots button").forEach(b=>{if(+b.dataset.go===n)b.setAttribute("aria-current","true");else b.removeAttribute("aria-current")});
-  return n;
-};
-/* pages before the current one wait at their last work, pages after at their first, so swiping reads in order */
-const presetOthers=()=>{const cp=pageOf(cur);tracks.forEach((tr,p)=>{if(!tr||p===cp)return;const its=itemsOf(tr);centre(tr,p<cp?its[its.length-1]:its[0],"auto");markOn(tr)})};
-layoutTracks();
-const setCur=i=>{
-  if(i===cur)return;cur=i;
-  count.textContent=i===0?`${N} works`:`${pad(i)} / ${N}`;
-  prev.disabled=i===0;next.disabled=i===N;
-  const h=i===0?"#index":`#work-${pad(i)}`;
-  try{if(location.hash!==h)history.replaceState(null,"",h)}catch(e){}
-};
-const go=(i,smooth)=>{
-  i=Math.max(0,Math.min(N,i));
-  const p=pageOf(i),cp=deckPage(),beh=smooth&&!reduce.matches?"smooth":"auto";
-  if(p>0){const tr=tracks[p];centre(tr,itemOf(i),p===cp?beh:"auto");if(p!==cp||beh==="auto")markOn(tr)}
-  if(p!==cp)deck.scrollTo({left:p*deck.clientWidth,behavior:beh});
-  setCur(i);
-};
-let raf=0,settle=0;
-deck.addEventListener("scroll",()=>{
-  cancelAnimationFrame(raf);
-  raf=requestAnimationFrame(()=>{const p=deckPage();if(p!==pageOf(cur))setCur(p===0?0:markOn(tracks[p]))});
-  clearTimeout(settle);settle=setTimeout(presetOthers,200);
-},{passive:true});
-tracks.forEach((tr,p)=>{
-  if(!tr)return;let r=0;
-  tr.addEventListener("scroll",()=>{cancelAnimationFrame(r);r=requestAnimationFrame(()=>{const n=markOn(tr);if(p===deckPage()&&p===pageOf(cur)&&n!==cur)setCur(n)})},{passive:true});
-});
-const relayout=()=>{
-  layoutTracks();if(cur<0)return;
-  const p=pageOf(cur);deck.scrollLeft=p*deck.clientWidth;
-  if(p>0){centre(tracks[p],itemOf(cur),"auto");markOn(tracks[p])}
-  presetOthers();
-};
-const deckRO=new ResizeObserver(relayout);
-deckRO.observe(deck);
-if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
-
-const fromHash=()=>{const m=/^#work-(\d{1,2})$/.exec(location.hash);return m?+m[1]:0};
-window.addEventListener("hashchange",()=>{const i=fromHash();if(i!==cur)go(i,false)});
+coverEl.addEventListener("pointerover",e=>{const t=e.target.closest(".ti");if(t&&e.pointerType!=="touch"&&!phone.matches)showGroup(+t.dataset.g,true)});
+coverEl.addEventListener("focusin",e=>{const t=e.target.closest(".ti");if(t&&!phone.matches)showGroup(+t.dataset.g,true)});
 
 /* detail view at full resolution, opened where the viewer clicked */
-const zoom=document.getElementById("zoom"),zimg=document.getElementById("zimg");
+const zoom=document.getElementById("zoom"),zimg=document.getElementById("zimg"),zlabel=document.getElementById("zlabel");
+let lastFocus=null;
 const openZoom=(n,e,box)=>{
   const[w,h]=DIMS[n-1];
   let fx=.5,fy=.5;
@@ -309,37 +207,34 @@ const openZoom=(n,e,box)=>{
   }
   const scale=Math.max(1,Math.min(w,Math.max(innerWidth*1.6,innerHeight*1.6*w/h))/w);
   const zw=Math.round(w*Math.min(1,scale)),zh=Math.round(h*zw/w);
+  lastFocus=document.activeElement;
   zimg.src=big(n);zimg.alt=`${label(n)}, detail`;zimg.width=zw;zimg.height=zh;
+  zlabel.innerHTML=`<b>No. ${pad(n)}</b>${esc(titleOf(n))}${part(n)?", "+part(n):""}`;
   zoom.hidden=false;
   zoom.scrollLeft=Math.max(0,fx*zw-zoom.clientWidth/2);
   zoom.scrollTop=Math.max(0,fy*zh-zoom.clientHeight/2);
   document.getElementById("zclose").focus({preventScroll:true});
 };
-const closeZoom=()=>{zoom.hidden=true;deck.focus({preventScroll:true})};
+const closeZoom=()=>{zoom.hidden=true;if(lastFocus&&lastFocus.focus)lastFocus.focus({preventScroll:true})};
 zoom.addEventListener("click",closeZoom);
 
-deck.addEventListener("click",e=>{
-  const g=e.target.closest("[data-go]");
-  if(g){go(+g.dataset.go,true);return}
-  const it=e.target.closest(".item");
-  if(it&&!it.classList.contains("on")){go(+it.dataset.n,true);return}
+coverEl.addEventListener("click",e=>{
   const z=e.target.closest("[data-z]");
-  if(z)openZoom(+z.dataset.z,z.classList.contains("art")?e:null,z.classList.contains("art")?z:null);
+  if(z){const im=z.classList.contains("pic")?z.querySelector("img"):null;openZoom(+z.dataset.z,im?e:null,im);return}
+  const t=e.target.closest(".ti");
+  if(t){if(phone.matches)openOnPhone(+t.dataset.g);else showGroup(+t.dataset.g,true)}
 });
-document.getElementById("home").addEventListener("click",()=>go(0,true));
-document.getElementById("index").addEventListener("click",()=>go(0,true));
-prev.addEventListener("click",()=>go(cur-1,true));
-next.addEventListener("click",()=>go(cur+1,true));
-document.addEventListener("keydown",e=>{
-  if(e.metaKey||e.ctrlKey||e.altKey)return;
-  if(!zoom.hidden){if(e.key==="Escape")closeZoom();return}
-  const k={ArrowRight:1,PageDown:1,ArrowLeft:-1,PageUp:-1}[e.key];
-  if(k){e.preventDefault();go(cur+k,true)}
-  else if(e.key==="Home"){e.preventDefault();go(0,true)}
-  else if(e.key==="End"){e.preventDefault();go(N,true)}
-});
+document.getElementById("home").addEventListener("click",()=>coverEl.scrollTo({top:0,behavior:introOK?"smooth":"auto"}));
+document.addEventListener("keydown",e=>{if(!zoom.hidden&&e.key==="Escape")closeZoom()});
 
-requestAnimationFrame(()=>{go(fromHash(),false);presetOthers()});
+/* start on the first series, or on the one an old link points to */
+const m=/^#work-(\d{1,2})$/.exec(location.hash);
+const startG=m?Math.max(0,groups.findIndex(g=>g.items.includes(+m[1]))):0;
+showGroup(startG,introOK);
+if(phone.matches)openOnPhone(startG);
+if(introOK)setTimeout(()=>coverEl.classList.remove("enter"),1400);
+new ResizeObserver(sizeIndex).observe(coverEl);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(sizeIndex);
 }
 </script>
 </body>
