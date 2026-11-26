@@ -148,7 +148,7 @@ if(introOK)coverEl.classList.add("enter");
 coverEl.innerHTML=`<div class="split">
   <div class="sl">
     <h1>Artworks by Kingsley Zheng</h1>
-    <p class="lede">All works &copy; Kingsley Zheng.</p>
+    <p class="lede">All works &copy; Qiyun (Kingsley) Zheng.</p>
     <ul class="titles">${groups.map((g,i)=>`<li style="--i:${i}"><button type="button" class="ti" data-g="${i}" aria-expanded="false"><span class="rng">${rngOf(g)}</span><span>${esc(g.name)}</span><span class="ar" aria-hidden="true">&#8594;</span></button><div class="drawer${g.pair?" pair":""}"${g.pair?` style="grid-template-columns:${g.items.map(n=>(AR(n)*10).toFixed(3)+"fr").join(" ")}"`:""}>${g.items.map(n=>fig(n,true)).join("")}</div></li>`).join("")}</ul>
   </div>
   <div class="sr" id="sr" aria-live="polite"></div>
