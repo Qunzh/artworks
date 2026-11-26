@@ -12,11 +12,11 @@
 /* VOICE occasion, hushed: a small exhibition of one artist's drawings
    IDEA one page: the titles of every series down the left; point at one and its works hang on the right
    PICTURE the works themselves, out to the page's right margin; any work opens full size for a closer look
-   COLOUR pure black ground in both themes, white ink, grey for labels, acid lime for the top bar, the chosen title and small details
+   COLOUR pure black ground (#000: near-black greys render as two different blacks on some Mac screens) in both themes, white ink, grey for labels, acid lime for the top bar, the chosen title and small details
    TYPE Syne (bold, wide) for the title, names and numbers; Manrope for labels
    LAYOUT a lime bar on top; titles left, works right: a series hangs one work under another (a pair of tall works side by side),
           a single work sits centred. Phone: one list; tap a title to open its works underneath */
-:root{color-scheme:dark;--bg:#050505;--ink:#f4f4f1;--mute:#8d8d88;--line:#222222;--acc:#d7ff3d;--on:#050505;--fd:Syne,'Helvetica Neue',Arial,sans-serif;--ft:Manrope,system-ui,-apple-system,sans-serif}
+:root{color-scheme:dark;--bg:#000;--ink:#f4f4f1;--mute:#8d8d88;--line:#222222;--acc:#d7ff3d;--on:#050505;--fd:Syne,'Helvetica Neue',Arial,sans-serif;--ft:Manrope,system-ui,-apple-system,sans-serif}
 :root[data-theme=light],:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
 html,body{height:100%;margin:0}
@@ -31,7 +31,7 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 /* the index is the whole site; the page margin is the same on both sides, and the pictures run out to it */
 .cover{height:100%;overflow-x:hidden;overflow-y:auto;padding:clamp(12px,2.5vw,32px) max(16px,3vw) clamp(20px,3vw,40px)}
 /* no grey scrollbar beside the works (its length changed with each series); the lime cue says when there is more below */
-.cover{scrollbar-width:none}
+.cover{scrollbar-width:none;background:var(--bg)}
 .cover::-webkit-scrollbar{display:none}
 .split{display:grid;grid-template-columns:minmax(300px,36%) minmax(0,1fr);gap:clamp(32px,4.2vw,64px);align-items:start}
 .sl{position:sticky;top:0}
