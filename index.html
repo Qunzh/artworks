@@ -36,17 +36,29 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .no{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(26px,3vw,34px);line-height:1;white-space:nowrap}
 .ser{color:var(--mute);font-size:14px}
 .ser em{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(20px,2vw,24px);line-height:1.1;color:var(--ink)}
-.sib{display:flex;gap:6px}
-.sib button{padding:6px 0;border:0;background:none;cursor:pointer;opacity:.35;transition:opacity .2s}
-.sib button:hover{opacity:.7}
-.sib button[aria-current]{opacity:1;cursor:default}
-.sib img{height:30px;width:auto;display:block}
 .detail{margin-left:auto}
+/* a series page: its title and dots stay put; the works slide in a track, neighbours dimmed at the edges */
+.room-page{grid-template-rows:auto minmax(0,1fr);padding:clamp(12px,2.2vw,28px) 0 0}
+.rhead{display:flex;align-items:center;justify-content:space-between;gap:8px 20px;padding:0 max(16px,3vw) clamp(10px,1.8vw,20px)}
+.rhead h2{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(26px,2.6vw,36px);line-height:1.1;margin:0;text-wrap:balance}
+.dots{display:flex;flex:none}
+.dots button{width:30px;height:30px;padding:0;border:0;background:none;cursor:pointer;display:grid;place-items:center}
+.dots button::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mute);opacity:.5;transition:background .3s,opacity .3s,transform .3s}
+.dots button[aria-current]::before{background:var(--ink);opacity:1;transform:scale(1.15)}
+.track{position:relative;display:flex;gap:clamp(16px,2.6vw,44px);overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none}
+.track::-webkit-scrollbar{display:none}
+.track::before{content:"";flex:0 0 var(--sl,0px)}
+.track::after{content:"";flex:0 0 var(--sr,0px)}
+.item{flex:0 0 var(--w,60%);margin:0;display:flex;flex-direction:column;justify-content:center;scroll-snap-align:center;scroll-snap-stop:always;opacity:.28;transition:opacity .45s}
+.item.on{opacity:1}
+.item:not(.on),.item:not(.on) .art{cursor:pointer}
+.item:not(.on):hover{opacity:.5}
+.item:not(.on) .detail{visibility:hidden}
+.item .art{flex:none;width:var(--w);height:var(--h)}
 .cover{grid-template-rows:auto auto;align-content:start;overflow-x:hidden;overflow-y:auto;padding-bottom:28px}
-.head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px clamp(28px,3.5vw,56px);margin:clamp(4px,2vh,24px) 0 clamp(16px,3vh,32px)}
-.cover h1{flex:0 1 auto;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(40px,5.6vw,76px);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
-.lede{flex:1 1 30ch;max-width:50ch;color:var(--mute);font-size:13px;line-height:1.6;margin:0;padding-bottom:.35em}
-.lede button{background:none;border:0;padding:0;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;margin:clamp(8px,3vh,36px) 0 clamp(20px,4vh,40px)}
+.cover h1{font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:clamp(40px,5.6vw,76px);line-height:1.02;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.lede{max-width:60ch;color:var(--mute);font-size:13px;line-height:1.6;margin:0}
 .wall{--th:200px;border-bottom:1px solid var(--line)}
 .grp .row button{animation:drift var(--d,14s) ease-in-out var(--dl,0s) infinite alternate;will-change:transform}
 .wall.still .grp .row button{animation-play-state:paused}
@@ -127,22 +139,25 @@ const grpHtml=g=>`<div class="grp"><h2>${esc(g.name)}</h2><div class="row">${g.i
 const cover=`<section class="slide cover" aria-label="Index">
   <div class="head">
     <h1>Artworks by Kingsley Zheng</h1>
-    <p class="lede">Nineteen works: six series and four single pieces. Choose a work, swipe, or use the arrow keys to walk through them in order, <button type="button" data-go="1">starting with No.&nbsp;01</button>. All works &copy; Kingsley Zheng.</p>
+    <p class="lede">Nineteen works: six series and four single pieces. All works &copy; Kingsley Zheng.</p>
   </div>
   <div class="wall${introOK?" pre":""}">${groups.map(grpHtml).join("")}</div>
 </section>`;
 
-/* one wall per work */
-const slide=n=>{
-  const[w,h]=DIMS[n-1];const s=serOf(n);
-  const sib=s?`<div class="sib">${s[1].map(m=>`<button type="button" data-go="${m}" aria-label="${esc(label(m))}"${m===n?' aria-current="true"':""}><img src="${small(m)}" alt="" loading="lazy"></button>`).join("")}</div>`:"";
-  return `<section class="slide" id="w${n}" aria-label="${esc(label(n))}">
-  <div class="art" data-z="${n}"><img src="${big(n)}" width="${w}" height="${h}" alt="${esc(label(n))}, by Kingsley Zheng" loading="${n<3?"eager":"lazy"}" decoding="async"></div>
-  <div class="cap"><span class="no">No. ${pad(n)}</span><span class="ser"><em>${esc(titleOf(n))}</em>${s?`, ${part(n)}`:""}</span>${sib}<button class="btn detail" type="button" data-z="${n}">View detail</button></div>
-</section>`};
+/* one page per series: its works sit in a sliding track, neighbours peeking; a single work gets the same page on its own.
+   Each work's label travels with it; the title and dots stay put. */
+const roomPage=(g,k)=>{
+  const multi=g.items.length>1;
+  const dots=multi?`<div class="dots">${g.items.map(n=>`<button type="button" data-go="${n}" aria-label="${esc(label(n))}"></button>`).join("")}</div>`:"";
+  const items=g.items.map(n=>{const[w,h]=DIMS[n-1];return `<figure class="item" data-n="${n}">
+    <div class="art" data-z="${n}"><img src="${big(n)}" width="${w}" height="${h}" alt="${esc(label(n))}, by Kingsley Zheng" loading="${k<1?"eager":"lazy"}" decoding="async"></div>
+    <figcaption class="cap"><span class="no">No. ${pad(n)}</span>${multi?`<span class="ser">${part(n)}</span>`:""}<button class="btn detail" type="button" data-z="${n}">View detail</button></figcaption>
+  </figure>`}).join("");
+  return `<section class="slide room-page" aria-label="${esc(g.name)}"><header class="rhead"><h2>${esc(g.name)}</h2>${dots}</header><div class="track">${items}</div></section>`;
+};
 
 const deck=document.getElementById("deck");
-deck.innerHTML=cover+Array.from({length:N},(_,i)=>slide(i+1)).join("");
+deck.innerHTML=cover+groups.map(roomPage).join("");
 
 /* size the rooms: one height for every work, as large as lets the widest series sit on one line
    (capped so a room stays well inside the screen; phones keep works legible and let a series wrap) */
@@ -162,6 +177,39 @@ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitWall);
 const count=document.getElementById("count"),prev=document.getElementById("prev"),next=document.getElementById("next");
 const reduce=matchMedia("(prefers-reduced-motion: reduce)");
 let cur=-1;
+const pages=[...deck.querySelectorAll(".slide")];
+const tracks=pages.map(pg=>pg.querySelector(".track"));
+const pageOf=i=>i===0?0:groups.findIndex(g=>g.items.includes(i))+1;
+const deckPage=()=>Math.round(deck.scrollLeft/Math.max(1,deck.clientWidth));
+const itemsOf=tr=>[...tr.querySelectorAll(".item")];
+const itemOf=n=>deck.querySelector(`.item[data-n="${n}"]`);
+/* each work as large as the track allows, but no wider than ~70% of the page so its neighbours show */
+const layoutTracks=()=>{
+  const W=deck.clientWidth;if(!W)return;
+  const maxW=W*(W<700?.8:.68);
+  tracks.forEach(tr=>{
+    if(!tr)return;
+    const its=itemsOf(tr),capH=its[0].querySelector(".cap").offsetHeight;
+    const H=Math.max(100,tr.clientHeight-capH),gap=parseFloat(getComputedStyle(tr).columnGap)||0;
+    let wf=0,wl=0;
+    its.forEach((it,j)=>{const ar=AR(+it.dataset.n),w=Math.floor(Math.min(maxW,H*ar));it.style.setProperty("--w",w+"px");it.style.setProperty("--h",Math.floor(w/ar)+"px");if(!j)wf=w;wl=w});
+    tr.style.setProperty("--sl",Math.max(0,(W-wf)/2-gap)+"px");
+    tr.style.setProperty("--sr",Math.max(0,(W-wl)/2-gap)+"px");
+  });
+};
+const centre=(tr,it,behavior)=>tr.scrollTo({left:it.offsetLeft+it.offsetWidth/2-tr.clientWidth/2,behavior});
+/* the work in the middle of a track is lit, with its dot */
+const markOn=tr=>{
+  const mid=tr.scrollLeft+tr.clientWidth/2;let best=null,bd=Infinity;
+  itemsOf(tr).forEach(it=>{const d=Math.abs(it.offsetLeft+it.offsetWidth/2-mid);if(d<bd){bd=d;best=it}});
+  itemsOf(tr).forEach(it=>it.classList.toggle("on",it===best));
+  const n=+best.dataset.n;
+  tr.parentNode.querySelectorAll(".dots button").forEach(b=>{if(+b.dataset.go===n)b.setAttribute("aria-current","true");else b.removeAttribute("aria-current")});
+  return n;
+};
+/* pages before the current one wait at their last work, pages after at their first, so swiping reads in order */
+const presetOthers=()=>{const cp=pageOf(cur);tracks.forEach((tr,p)=>{if(!tr||p===cp)return;const its=itemsOf(tr);centre(tr,p<cp?its[its.length-1]:its[0],"auto");markOn(tr)})};
+layoutTracks();
 const setCur=i=>{
   if(i===cur)return;cur=i;
   wall.classList.toggle("still",i!==0);
@@ -172,13 +220,30 @@ const setCur=i=>{
 };
 const go=(i,smooth)=>{
   i=Math.max(0,Math.min(N,i));
-  deck.scrollTo({left:i*deck.clientWidth,behavior:smooth&&!reduce.matches?"smooth":"auto"});
+  const p=pageOf(i),cp=deckPage(),beh=smooth&&!reduce.matches?"smooth":"auto";
+  if(p>0){const tr=tracks[p];centre(tr,itemOf(i),p===cp?beh:"auto");if(p!==cp||beh==="auto")markOn(tr)}
+  if(p!==cp)deck.scrollTo({left:p*deck.clientWidth,behavior:beh});
   setCur(i);
 };
-let raf=0;
-deck.addEventListener("scroll",()=>{cancelAnimationFrame(raf);raf=requestAnimationFrame(()=>setCur(Math.round(deck.scrollLeft/deck.clientWidth)))},{passive:true});
-const deckRO=new ResizeObserver(()=>{if(cur>=0)deck.scrollLeft=cur*deck.clientWidth});
+let raf=0,settle=0;
+deck.addEventListener("scroll",()=>{
+  cancelAnimationFrame(raf);
+  raf=requestAnimationFrame(()=>{const p=deckPage();if(p!==pageOf(cur))setCur(p===0?0:markOn(tracks[p]))});
+  clearTimeout(settle);settle=setTimeout(presetOthers,200);
+},{passive:true});
+tracks.forEach((tr,p)=>{
+  if(!tr)return;let r=0;
+  tr.addEventListener("scroll",()=>{cancelAnimationFrame(r);r=requestAnimationFrame(()=>{const n=markOn(tr);if(p===deckPage()&&p===pageOf(cur)&&n!==cur)setCur(n)})},{passive:true});
+});
+const relayout=()=>{
+  layoutTracks();if(cur<0)return;
+  const p=pageOf(cur);deck.scrollLeft=p*deck.clientWidth;
+  if(p>0){centre(tracks[p],itemOf(cur),"auto");markOn(tracks[p])}
+  presetOthers();
+};
+const deckRO=new ResizeObserver(relayout);
 deckRO.observe(deck);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(relayout);
 
 const fromHash=()=>{const m=/^#work-(\d{1,2})$/.exec(location.hash);return m?+m[1]:0};
 window.addEventListener("hashchange",()=>{const i=fromHash();if(i!==cur)go(i,false)});
@@ -207,6 +272,8 @@ zoom.addEventListener("click",closeZoom);
 deck.addEventListener("click",e=>{
   const g=e.target.closest("[data-go]");
   if(g){go(+g.dataset.go,true);return}
+  const it=e.target.closest(".item");
+  if(it&&!it.classList.contains("on")){go(+it.dataset.n,true);return}
   const z=e.target.closest("[data-z]");
   if(z)openZoom(+z.dataset.z,z.classList.contains("art")?e:null,z.classList.contains("art")?z:null);
 });
@@ -223,7 +290,7 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="End"){e.preventDefault();go(N,true)}
 });
 
-requestAnimationFrame(()=>go(fromHash(),false));
+requestAnimationFrame(()=>{go(fromHash(),false);presetOthers()});
 
 const intro=()=>{
   try{
