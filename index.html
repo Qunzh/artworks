@@ -27,6 +27,12 @@ button:focus-visible{outline:2px solid var(--ink);outline-offset:2px}
 .bar{display:flex;align-items:center;gap:8px;padding:6px max(16px,3vw);background:var(--acc);color:var(--on)}
 .brand{margin-right:auto;background:none;border:0;padding:0 4px 0 0;min-height:44px;font-family:var(--fd);font-size:18px;font-weight:700;letter-spacing:-.02em;cursor:pointer;white-space:nowrap}
 .bar button:focus-visible{outline-color:var(--on)}
+/* the way between the two pages: Artworks / Writing */
+.nav{display:flex;gap:4px}
+.nav a{min-height:36px;display:inline-flex;align-items:center;padding:0 14px;border-radius:999px;font-size:14px;color:inherit;text-decoration:none;border:1px solid rgba(5,5,5,.3)}
+.nav a:hover{border-color:var(--on)}
+.nav a[aria-current]{background:var(--on);color:var(--acc);border-color:var(--on)}
+.nav a:focus-visible{outline:2px solid var(--on);outline-offset:2px}
 
 /* the index is the whole site; the page margin is the same on both sides, and the pictures run out to it */
 .cover{height:100%;overflow-x:hidden;overflow-y:auto;padding:clamp(12px,2.5vw,32px) max(16px,3vw) clamp(20px,3vw,40px)}
@@ -98,6 +104,7 @@ figcaption b{color:var(--acc);font-weight:500}
 .titles li.open .ti{color:var(--acc)}
 .titles li.open .ar{color:var(--acc);transform:rotate(90deg)}
 .brand{font-size:16px}
+.nav a{padding:0 12px}
 }
 @media(prefers-reduced-motion:reduce){.rise,.cover.enter .titles li,.cue .arr{animation:none}}
 </style>
@@ -105,6 +112,10 @@ figcaption b{color:var(--acc);font-weight:500}
 <body>
 <header class="bar">
   <button class="brand" id="home" type="button">Kingsley Zheng</button>
+  <nav class="nav" aria-label="Sections">
+    <a href="./" aria-current="page">Artworks</a>
+    <a href="https://qunzh.github.io/writing/">Writing</a>
+  </nav>
 </header>
 <main class="cover" id="cover" tabindex="-1" aria-label="Index"></main>
 <div class="zoom" id="zoom" hidden>
